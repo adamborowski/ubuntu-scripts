@@ -1,0 +1,1 @@
+avconv -i $1 -strict experimental -vf vflip,hflip "rotated_$1"

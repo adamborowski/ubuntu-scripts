@@ -1,0 +1,47 @@
+paths=()
+files=()
+res=hd1080
+
+
+
+
+usage() { echo "Usage: $0 [-s <45|90>] [-p <string>]" 1>&2; exit 1; }
+
+while getopts ":p:" o; do
+    case "${o}" in
+        s)
+            res=${OPTARG}
+            ;;
+        p)
+	    paths+=(${OPTARG})
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+if [ -z paths ]; then paths=`pwd`; fi
+
+
+for path in "${paths[@]}"
+do
+ echo "Wyszukiwanie w ścieżkce: " $path
+ files+=(`find $path -iname *.mp4`)
+done
+
+
+echo No paths: ${#paths[@]}
+echo No files: ${#files[@]}
+#avconv -i VID_20141215_114059.mp4 -strict experimental  -s hd1080 test.mp4
+
+
+for file in "${files[@]}"
+do
+  echo "Przetwarzanie pliku $file"
+  name=`basename $file`
+  echo $name
+  name=compressed_$name
+  name=`dirname $file`/$name
+  avconv -i $file -strict experimental  -s $res $name
+done
